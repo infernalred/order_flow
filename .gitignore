@@ -1,0 +1,78 @@
+# Go build and test artifacts
+/bin/
+/build/
+/dist/
+/tmp/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Coverage and profiling
+/coverage/
+coverage.*
+*.coverprofile
+*.prof
+*.pprof
+
+# Local Go workspace and vendored dependencies
+go.work
+go.work.sum
+/vendor/
+
+# Runtime data and logs
+*.log
+*.pid
+/data/
+
+# Environment and local configuration
+.env
+.env.*
+!.env.example
+*.local
+
+# Local secrets and certificates
+/secrets/
+*.pem
+*.key
+*.p12
+*.pfx
+deployments/**/secret*.yaml
+deployments/**/secret*.yml
+
+# IDE and editor settings
+.idea/
+.vscode/
+*.iml
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*~
+*.swp
+*.swo
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Tool caches
+.cache/
+.task/
+.golangci-lint-cache/
+
+# Terraform state, if infrastructure is added later
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+
+# Local observability data
+/deployments/observability/data/
+
+# Keep generated Go sources, go.sum, migrations, API contracts,
+# Compose/Kubernetes manifests and Helm charts under version control.
