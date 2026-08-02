@@ -25,10 +25,10 @@ Roadmap оформлен как Markdown task list:
 
 ### 0.1. Go module и структура
 
-- [ ] Инициализировать Go module.
-- [ ] Создать `cmd/api` и минимальный `main.go`.
-- [ ] Создать базовые каталоги `internal`, `db`, `api` и `tests`.
-- [ ] Добавить Makefile с командами `build`, `test` и `lint`.
+- [x] Инициализировать Go module.
+- [x] Создать `cmd/api` и минимальный `main.go`.
+- [x] Создать базовые каталоги `internal`, `db`, `api` и `tests`.
+- [x] Добавить Makefile с командами `build`, `test` и `lint`.
 
 ### 0.2. Конфигурация и логирование
 
