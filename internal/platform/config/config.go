@@ -28,6 +28,7 @@ type HTTPConfig struct {
 	ReadTimeout     time.Duration
 	WriteTimeout    time.Duration
 	ShutdownTimeout time.Duration
+	IdleTimeout     time.Duration
 }
 
 // LogConfig with level
@@ -65,6 +66,11 @@ func Load() (Config, error) {
 		return Config{}, err
 	}
 
+	idleTimeout, err := requiredDuration("HTTP_IDLE_TIMEOUT")
+	if err != nil {
+		return Config{}, err
+	}
+
 	logLevel, err := requiredEnv("LOG_LEVEL")
 	if err != nil {
 		return Config{}, err
@@ -81,6 +87,7 @@ func Load() (Config, error) {
 			ReadTimeout:     readTimeout,
 			WriteTimeout:    writeTimeout,
 			ShutdownTimeout: shutdownTimeout,
+			IdleTimeout:     idleTimeout,
 		},
 		Log: LogConfig{
 			Level: logLevel,

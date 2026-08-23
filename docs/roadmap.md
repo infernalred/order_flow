@@ -42,11 +42,11 @@ Roadmap оформлен как Markdown task list:
 
 - [ ] Создать HTTP server с read, write, idle и shutdown timeout.
 - [ ] Добавить middleware для request ID и correlation ID и включить их в HTTP-логи.
-- [ ] Реализовать `GET /live`.
-- [ ] Реализовать `GET /ready`.
+- [x] Реализовать `GET /live`.
+- [x] Реализовать `GET /ready`.
 - [ ] Обрабатывать `SIGINT` и `SIGTERM`.
 - [ ] Реализовать graceful shutdown через `context.Context`.
-- [ ] Добавить unit-тесты health endpoints.
+- [x] Добавить unit-тесты health endpoints.
 
 ### 0.4. PostgreSQL
 
