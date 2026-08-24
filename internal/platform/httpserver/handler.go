@@ -11,7 +11,7 @@ func NewHandler() http.Handler {
 	mux.HandleFunc("GET /live", live)
 	mux.HandleFunc("GET /ready", ready)
 
-	return mux
+	return requestMetadata(mux)
 }
 
 func live(w http.ResponseWriter, _ *http.Request) {
