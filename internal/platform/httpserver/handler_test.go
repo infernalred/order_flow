@@ -2,6 +2,8 @@ package httpserver
 
 import (
 	"encoding/json"
+	"io"
+	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -48,7 +50,7 @@ func TestNewHandler(t *testing.T) {
 			request := httptest.NewRequest(tt.method, tt.path, nil)
 			resp := httptest.NewRecorder()
 
-			handler := NewHandler()
+			handler := NewHandler(newDiscardLogger())
 			handler.ServeHTTP(resp, request)
 
 			if resp.Code != tt.wantStatus {
@@ -77,4 +79,10 @@ func TestNewHandler(t *testing.T) {
 			}
 		})
 	}
+}
+
+func newDiscardLogger() *slog.Logger {
+	return slog.New(
+		slog.NewTextHandler(io.Discard, nil),
+	)
 }

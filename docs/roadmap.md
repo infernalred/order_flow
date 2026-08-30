@@ -41,7 +41,7 @@ Roadmap оформлен как Markdown task list:
 ### 0.3. HTTP server и жизненный цикл
 
 - [ ] Создать HTTP server с read, write, idle и shutdown timeout.
-- [ ] Добавить middleware для request ID и correlation ID и включить их в HTTP-логи.
+- [x] Добавить middleware для request ID и correlation ID и включить их в HTTP-логи.
 - [x] Реализовать `GET /live`.
 - [x] Реализовать `GET /ready`.
 - [ ] Обрабатывать `SIGINT` и `SIGTERM`.

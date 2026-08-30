@@ -2,16 +2,19 @@ package httpserver
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 )
 
-func NewHandler() http.Handler {
+func NewHandler(logger *slog.Logger) http.Handler {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /live", live)
 	mux.HandleFunc("GET /ready", ready)
 
-	return requestMetadata(mux)
+	return requestMetadata(
+		requestLogging(logger, mux),
+	)
 }
 
 func live(w http.ResponseWriter, _ *http.Request) {
