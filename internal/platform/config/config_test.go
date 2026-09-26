@@ -52,6 +52,13 @@ func TestLoad(t *testing.T) {
 			60*time.Second,
 		)
 	}
+	if actual.HTTP.ReadHeaderTimeout != 5*time.Second {
+		t.Errorf(
+			"HTTP.ReadHeaderTimeout = %v, want %v",
+			actual.HTTP.ReadHeaderTimeout,
+			5*time.Second,
+		)
+	}
 
 	if actual.Log.Level != "info" {
 		t.Errorf("Log.Level = %q, want %q", actual.Log.Level, "info")
@@ -80,6 +87,7 @@ func TestLoadMissingEnvironmentVariables(t *testing.T) {
 		"HTTP_WRITE_TIMEOUT",
 		"HTTP_SHUTDOWN_TIMEOUT",
 		"HTTP_IDLE_TIMEOUT",
+		"HTTP_READ_HEADER_TIMEOUT",
 		"LOG_LEVEL",
 	}
 
@@ -142,6 +150,11 @@ func TestLoadInvalidEnvironmentVariables(t *testing.T) {
 			value: "not-a-duration",
 		},
 		{
+			name:  "read header timeout",
+			key:   "HTTP_READ_HEADER_TIMEOUT",
+			value: "not-a-duration",
+		},
+		{
 			name:  "zero duration",
 			key:   "HTTP_READ_TIMEOUT",
 			value: "0s",
@@ -154,6 +167,11 @@ func TestLoadInvalidEnvironmentVariables(t *testing.T) {
 		{
 			name:  "zero duration",
 			key:   "HTTP_IDLE_TIMEOUT",
+			value: "0s",
+		},
+		{
+			name:  "zero duration",
+			key:   "HTTP_READ_HEADER_TIMEOUT",
 			value: "0s",
 		},
 		{
@@ -192,5 +210,6 @@ func setValidEnvironment(t *testing.T) {
 	t.Setenv("HTTP_WRITE_TIMEOUT", "10s")
 	t.Setenv("HTTP_SHUTDOWN_TIMEOUT", "10s")
 	t.Setenv("HTTP_IDLE_TIMEOUT", "60s")
+	t.Setenv("HTTP_READ_HEADER_TIMEOUT", "5s")
 	t.Setenv("LOG_LEVEL", "info")
 }

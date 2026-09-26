@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"sync/atomic"
 
 	"github.com/infernalred/order_flow/internal/platform/config"
 	"github.com/infernalred/order_flow/internal/platform/httpserver"
@@ -28,14 +29,17 @@ func main() {
 		os.Exit(1)
 	}
 
-	handler := httpserver.NewHandler(logger)
+	var readiness atomic.Bool
+	readiness.Store(true)
+	handler := httpserver.NewHandler(logger, &readiness)
 
 	server := &http.Server{
-		Addr:         cfg.HTTP.Address,
-		Handler:      handler,
-		ReadTimeout:  cfg.HTTP.ReadTimeout,
-		WriteTimeout: cfg.HTTP.WriteTimeout,
-		IdleTimeout:  cfg.HTTP.IdleTimeout,
+		Addr:              cfg.HTTP.Address,
+		Handler:           handler,
+		ReadTimeout:       cfg.HTTP.ReadTimeout,
+		WriteTimeout:      cfg.HTTP.WriteTimeout,
+		IdleTimeout:       cfg.HTTP.IdleTimeout,
+		ReadHeaderTimeout: cfg.HTTP.ReadHeaderTimeout,
 	}
 
 	logger.Info(
@@ -44,6 +48,7 @@ func main() {
 		slog.String("read_timeout", server.ReadTimeout.String()),
 		slog.String("write_timeout", server.WriteTimeout.String()),
 		slog.String("idle_timeout", server.IdleTimeout.String()),
+		slog.String("header_timeout", server.ReadHeaderTimeout.String()),
 	)
 
 	if err := server.ListenAndServe(); err != nil &&

@@ -24,11 +24,12 @@ type Config struct {
 
 // HTTPConfig with params
 type HTTPConfig struct {
-	Address         string
-	ReadTimeout     time.Duration
-	WriteTimeout    time.Duration
-	ShutdownTimeout time.Duration
-	IdleTimeout     time.Duration
+	Address           string
+	ReadTimeout       time.Duration
+	WriteTimeout      time.Duration
+	ShutdownTimeout   time.Duration
+	IdleTimeout       time.Duration
+	ReadHeaderTimeout time.Duration
 }
 
 // LogConfig with level
@@ -71,6 +72,11 @@ func Load() (Config, error) {
 		return Config{}, err
 	}
 
+	headerTimeout, err := requiredDuration("HTTP_READ_HEADER_TIMEOUT")
+	if err != nil {
+		return Config{}, err
+	}
+
 	logLevel, err := requiredEnv("LOG_LEVEL")
 	if err != nil {
 		return Config{}, err
@@ -83,11 +89,12 @@ func Load() (Config, error) {
 	return Config{
 		Environment: environment,
 		HTTP: HTTPConfig{
-			Address:         address,
-			ReadTimeout:     readTimeout,
-			WriteTimeout:    writeTimeout,
-			ShutdownTimeout: shutdownTimeout,
-			IdleTimeout:     idleTimeout,
+			Address:           address,
+			ReadTimeout:       readTimeout,
+			WriteTimeout:      writeTimeout,
+			ShutdownTimeout:   shutdownTimeout,
+			IdleTimeout:       idleTimeout,
+			ReadHeaderTimeout: headerTimeout,
 		},
 		Log: LogConfig{
 			Level: logLevel,
