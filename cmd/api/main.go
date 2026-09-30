@@ -1,11 +1,14 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"log/slog"
 	"net/http"
 	"os"
+	"os/signal"
 	"sync/atomic"
+	"syscall"
 
 	"github.com/infernalred/order_flow/internal/platform/config"
 	"github.com/infernalred/order_flow/internal/platform/httpserver"
@@ -51,12 +54,45 @@ func main() {
 		slog.String("header_timeout", server.ReadHeaderTimeout.String()),
 	)
 
-	if err := server.ListenAndServe(); err != nil &&
-		!errors.Is(err, http.ErrServerClosed) {
-		logger.Error(
-			"HTTP server failed",
-			slog.Any("error", err),
-		)
-		os.Exit(1)
+	signalCtx, stopSignals := signal.NotifyContext(
+		context.Background(),
+		os.Interrupt,
+		syscall.SIGTERM,
+	)
+	defer stopSignals()
+
+	serverError := make(chan error, 1)
+	go func() {
+		serverError <- server.ListenAndServe()
+	}()
+
+	select {
+	case err = <-serverError:
+		if err != nil &&
+			!errors.Is(err, http.ErrServerClosed) {
+			logger.Error("HTTP server failed", slog.Any("error", err))
+			os.Exit(1)
+		}
+		logger.Info("HTTP server stopped")
+	case <-signalCtx.Done():
+		stopSignals()
+		logger.Info("HTTP server stopping")
+		readiness.Store(false)
+		ctx, cancel := context.WithTimeout(context.Background(), cfg.HTTP.ShutdownTimeout)
+		defer cancel()
+		shutdownErr := server.Shutdown(ctx)
+		listenErr := <-serverError
+		if shutdownErr != nil || (listenErr != nil && !errors.Is(listenErr, http.ErrServerClosed)) {
+			_ = server.Close()
+			if shutdownErr != nil {
+				logger.Error("HTTP server shutdown failed", slog.Any("error", shutdownErr))
+			}
+			if listenErr != nil && !errors.Is(listenErr, http.ErrServerClosed) {
+				logger.Error("HTTP server listen failed", slog.Any("error", listenErr))
+			}
+			os.Exit(1)
+		}
+
+		logger.Info("HTTP server stopped successfully")
 	}
 }
