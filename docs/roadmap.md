@@ -90,12 +90,14 @@ Roadmap оформлен как Markdown task list:
 
 ### 0.3. HTTP server и жизненный цикл
 
-- [ ] Создать HTTP server с read-header, read, write и idle timeout; shutdown ограничивать отдельным context с deadline.
+- [x] Создать HTTP server с read-header, read, write и idle timeout; shutdown ограничивать отдельным context с deadline.
 - [x] Добавить middleware для request ID и correlation ID и включить их в HTTP-логи.
 - [x] Реализовать `GET /live`.
 - [x] Реализовать `GET /ready`.
-- [ ] Обрабатывать `SIGINT` и `SIGTERM`.
-- [ ] Реализовать graceful shutdown: выключить readiness, остановить приём работы, дождаться handlers, закрыть зависимости; для shutdown использовать отдельный, ещё не отменённый context.
+- [x] Обрабатывать `SIGINT` и `SIGTERM`.
+- [x] Реализовать graceful shutdown: выключить readiness, остановить приём работы, дождаться handlers, закрыть зависимости; для shutdown использовать отдельный, ещё не отменённый context.
+
+  Проверены остановка по обоим сигналам, ожидание активного HTTP-запроса и принудительное закрытие соединений при превышении shutdown timeout с кодом выхода `1`. Закрываемых внешних зависимостей пока нет; их завершение нужно включать в этот жизненный цикл по мере добавления.
 - [x] Добавить unit-тесты health endpoints.
 
 ### 0.4. PostgreSQL
